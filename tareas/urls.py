@@ -5,6 +5,7 @@ from tareas import views
 
 router = routers.DefaultRouter()
 router.register(r'tasks',views.TaskView,'tasks')
+router.register(r'projects',views.ProjectView,'projects')
 
 urlpatterns = [
     path("api/v1/", include(router.urls) ),

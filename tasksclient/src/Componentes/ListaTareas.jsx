@@ -10,12 +10,32 @@ const ListaTareas = () => {
 
     const [tareas, setTareas] = useState([]);
 
+    const orderForDate = () => {
+        const newTareas = [...tareas].sort((a,b) =>{
+            return new Date(a.fecha) - new Date(b.fecha)
+        });
+        setTareas(newTareas);
+    }
+
+    const orderForPrioridad = () => {
+        const newTareas = [...tareas].sort((a,b) => {
+            if(a.prioridad == b.prioridad) {
+                console.log("ambos iguales");
+                return new Date(a.fecha) - new Date(b.fecha);
+            }else{
+                const prioriryOrder = {'alta':1,'media':2,'baja':3};
+                return prioriryOrder[a.prioridad] - prioriryOrder[b.prioridad];
+            }
+        })
+        setTareas(newTareas);
+    }
+
     const  getTareasPrevias = async () => {
         console.log("Cargando Tareas del servidor");
         try{
             const responseTareasPrevias = await axios.get(URL);
             setTareas(responseTareasPrevias.data);
-            console.log(responseTareasPrevias.data);
+            //console.log(responseTareasPrevias.data)
         }catch(error){
             console.log('[Request server error]',error)
         }
@@ -24,6 +44,7 @@ const ListaTareas = () => {
     useEffect(() => {
         getTareasPrevias();
     },[]);
+    
 
     const crearTarea = (tarea) => {
         if (tarea.texto.trim()){
@@ -56,19 +77,20 @@ const ListaTareas = () => {
         <>
             <h1 className = 'tituloCabecera'>To do List</h1>
 |           <div className="TareasContainer">
-                {tareas.map((tarea) => {
+                {tareas.map((tarea) => 
                     <Tarea
-                        key = {tareas.id}
-                        id = {tareas.id}
-                        texto = {tareas.texto}
-                        proyecto = {tareas.proyecto}
-                        prioridad = {tareas.prioridad}
-                        fecha = {tareas.fecha}
-                        completada ={tareas.completada}
+                        key = {tarea.id}
+                        id = {tarea.id}
+                        tarea = {tarea.text}
+                        proyecto = {tarea.proyecto}
+                        prioridad = {tarea.prioridad}
+                        fecha = {tarea.fecha}
+                        completada ={tarea.completada}
                         completarTarea = {completarTarea}
-                        eliminarTarea = {eliminarTarea}/>
-                })}
+                        eliminarTarea = {eliminarTarea}/> 
+                )}
             </div>
+            <button onClick={orderForPrioridad}>ordenar</button>
         </>
     );
 }
